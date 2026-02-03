@@ -13,7 +13,7 @@ export const pariserDorm: DormConfig = {
   id: 'pariser',
   slug: 'pariser',
   name: 'Pariser Straße',
-  displayName: 'Dorm 2',
+  displayName: 'Pariser Straße',
   description: 'Student residence at Pariser Straße 54 - 7 floors, rooms 100-140',
   imageUrl: '/pariser.jpg', // Add image to public folder
   labels: {

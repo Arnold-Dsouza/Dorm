@@ -20,7 +20,8 @@ export const useAdminAccess = (pageType: PageType) => {
             const userData = userDoc.data();
             const apartmentNumber = userData.apartmentNumber || '';
             setUserApartment(apartmentNumber);
-            const hasAccess = adminAccess[pageType].includes(apartmentNumber);
+            const accessList = adminAccess[pageType] ?? [];
+            const hasAccess = accessList.includes(apartmentNumber);
             setIsAdmin(hasAccess);
           }
         } catch (error) {
