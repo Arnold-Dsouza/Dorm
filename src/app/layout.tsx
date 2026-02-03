@@ -43,6 +43,9 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet"></link>
         
+        {/* Favicon */}
+        <link rel="icon" type="image/png" href="/favicon.png" />
+        
         {/* Apple touch icons for iOS PWA */}
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-192.webp" />
