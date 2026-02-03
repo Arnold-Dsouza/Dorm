@@ -6,7 +6,7 @@ const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/manifest.webmanifest',
-  '/tabu.png',
+  '/dorm.png',
   '/icons/icon-128.webp',
   '/icons/icon-192.webp',
   '/icons/icon-512.webp'
@@ -96,7 +96,7 @@ self.addEventListener('push', (event) => {
   let title = 'TABU Notification';
   let options = {
     body: 'You have a new notification from TABU',
-    icon: '/tabu.png',
+    icon: '/dorm.png',
     badge: '/icons/icon-96.webp',
     data: { 
       timestamp: Date.now(),
@@ -210,7 +210,7 @@ self.addEventListener('message', (event) => {
     console.log('Showing test notification');
     self.registration.showNotification('TABU Test Notification', {
       body: 'This is a test notification from TABU',
-      icon: '/tabu.png',
+      icon: '/dorm.png',
       badge: '/icons/icon-96.webp',
       vibrate: [200, 100, 200],
       data: { timestamp: Date.now(), test: true }

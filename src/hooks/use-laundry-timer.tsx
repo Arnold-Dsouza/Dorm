@@ -65,8 +65,8 @@ export function useLaundryTimer() {
             if ('Notification' in window && Notification.permission === 'granted') {
               new Notification('Laundry Ready!', {
                 body: `${timer.machineName} has finished`,
-                icon: '/tabu.png',
-                badge: '/tabu.png',
+                icon: '/dorm.png',
+                badge: '/dorm.png',
               });
             }
             
