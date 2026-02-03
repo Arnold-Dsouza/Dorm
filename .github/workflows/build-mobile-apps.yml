@@ -1,0 +1,118 @@
+name: 🚀 Build TABU 2 Mobile App
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    name: 📱 Build Android APK
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build web app
+      env:
+        NEXT_PUBLIC_FIREBASE_API_KEY: "AIzaSyBuazs1eTTu92mY828B0tx1k8-6FQ2-11c"
+        NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: "laundry-3024d.firebaseapp.com"
+        NEXT_PUBLIC_FIREBASE_PROJECT_ID: "laundry-3024d"
+        NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: "laundry-3024d.firebasestorage.app"
+        NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: "57247892501"
+        NEXT_PUBLIC_FIREBASE_APP_ID: "1:57247892501:web:f8967e02ea63f106d5fa1c"
+      run: npm run build
+
+    - name: Sync Capacitor Android
+      run: npx cap sync android
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x android/gradlew
+
+    - name: Build Android APK
+      run: |
+        cd android
+        ./gradlew assembleDebug
+
+    - name: Rename APK
+      run: mv android/app/build/outputs/apk/debug/app-debug.apk tabu2-android.apk
+
+    - name: Upload Android APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: tabu2-android-apk
+        path: tabu2-android.apk
+
+  create-release:
+    needs: [build-android]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    name: 🎉 Create Release
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Download Android APK
+      uses: actions/download-artifact@v4
+      with:
+        name: tabu2-android-apk
+        path: ./
+
+    - name: Get package version
+      id: package-version
+      run: echo "version=v$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ steps.package-version.outputs.version }}
+        name: TABU 2 Release ${{ steps.package-version.outputs.version }}
+        body: |
+          ## TABU 2 Mobile App Release
+          
+          ### 📱 What's Included:
+          - **Android APK**: Ready to install on Android devices
+          
+          ### 🚀 Features:
+          - Custom TABU 2 branding and icons
+          - User authentication with apartment numbers
+          - Real-time online user tracking
+          - Push notifications support
+          - Dark/Light theme support
+          - Forgot password functionality
+          
+          ### 📲 Installation:
+          - **Android**: Download and install the APK file
+
+          Built by Arnold Dsouza with ❤️ using Capacitor, Next.js, and Firebase.
+        files: |
+          tabu2-android.apk
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
